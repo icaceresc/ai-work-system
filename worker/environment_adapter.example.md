@@ -3,7 +3,9 @@
 > **Scope:** environment-specific routing and restrictions for one working environment.
 > **Principle:** keep this file small. It points to approved environment owners instead of duplicating their contents.
 
-This file is a template. Copy it into your own environment (e.g. `~/.claude/environment_adapter.md`) and adapt it. It is imported by the Worker Core (`worker/CLAUDE.md`) via `@environment_adapter.md`.
+This file is a template. Copy it outside this repository, into your own environment, and adapt it. The Worker Core (`worker/system_prompt.md`) consults it as the entry point for environment-specific configuration; how it is linked or imported depends on the harness — see the README.
+
+An Environment Adapter is **optional**. A simple environment may not need one.
 
 ## Contract
 
@@ -17,17 +19,19 @@ router/config local (optional)
 tools/helpers/references owned by this environment
 ```
 
-The Worker Core stays generic and portable. This adapter carries whatever is specific to one environment: which systems exist, which are read-only, which paths are writable, and where to look for more detail. A router is optional — a simple environment may not need one at all.
+The Worker Core stays generic and portable. This adapter carries whatever is specific to one environment: which systems exist, which are read-only, which paths are writable, and where to look for more detail.
 
 ## 1. Environment router (optional)
 
-If this environment has an index of tools/data sources/systems, point to it here instead of duplicating its contents:
+If this environment has an index of tools, data sources or systems, point to it here instead of duplicating its contents:
 
 `<path or reference to your router, if one exists>`
 
 Read it on demand, not at session start. Read it before the first action that touches a system it owns.
 
-If no router exists, list the relevant systems directly in this file.
+If no router exists, list the relevant systems directly in this file. A router only pays off when the environment is complex enough that listing everything here would bloat the adapter. For that case a structured index — a small JSON file mapping each system to its approved reference or helper — has worked well in practice: the adapter stays short, and the Worker follows one route per system instead of exploring.
+
+If the router is missing or unreadable, report the path and stop. Do not invent a replacement.
 
 ## 2. Routing discipline
 

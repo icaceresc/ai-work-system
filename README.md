@@ -1,127 +1,128 @@
 # AI Work System
 
-Sistema portable para trabajar con un Orchestrator IA (ChatGPT) y un Worker técnico (Claude Code), bajo un modelo de delegación explícita y verificable.
+Sistema reproducible de trabajo con IA: un **Human User**, un **Orchestrator** y un **Worker** técnico, bajo delegación explícita y verificable.
 
 ## 1. Qué es
 
-AI Work System es la especificación y los artifacts necesarios para reconstruir, desde cero, un flujo de trabajo donde:
-- el Usuario aporta intención, contexto y criterio;
-- un Orchestrator IA madura esa intención, planifica y delega en tareas acotadas;
-- un Worker técnico ejecuta esas tareas y produce evidencia verificable;
-- el Orchestrator verifica y sintetiza antes de devolver el resultado al Usuario.
-
-No es un framework de código. Es un conjunto de instrucciones, protocolos y templates versionados en texto plano.
-
-## 2. Arquitectura
+No es un framework de código. Es un conjunto mínimo de instrucciones y protocolos en texto plano que se despliegan sobre herramientas que ya existen.
 
 ```text
 Human User
-    ↓
-Orchestrator (Orchestrator Prime en ChatGPT)
-    ↓
-Job Packet / delegación acotada
-    ↓
-Worker (Claude Code)
-    ↓
-Evidencia técnica
-    ↓
-Orchestrator — verificación / síntesis
-    ↓
-Human User — decide cuando corresponde
+    ↓ intención, contexto, criterio
+Orchestrator
+    ↓ instrucción madura / Job Packet
+Worker
+    ↓ evidencia técnica
+Orchestrator
+    ↓ verificación y síntesis
+Human User — decide solo cuando hace falta criterio humano
 ```
 
-Detalle completo en [`docs/ai_work_system_architecture_v1.md`](docs/ai_work_system_architecture_v1.md).
+Principio: **el Orchestrator absorbe la complejidad, el Worker ejecuta, el Usuario no coordina modelos ni herramientas a mano salvo necesidad.**
 
-Claude Code es la implementación de referencia del rol Worker, no la única posible.
+El Worker es un **rol**, no un producto. Implementaciones ya usadas: Claude Code y Antigravity CLI.
 
-## 3. Componentes y qué artifact los implementa
+## 2. Qué contiene
 
-| Componente | Artifact |
-|---|---|
-| Instructions del Orchestrator | `orchestrator/orchestrator_prime_instructions_mvp_v1.md` |
-| Manifest de reconstrucción del Orchestrator | `orchestrator/orchestrator_prime_mvp_manifest_v1.md` |
-| Knowledge del Orchestrator | `orchestrator/knowledge/*.md` |
-| Cheatsheet de uso rápido | `orchestrator/cheatsheet.md` |
-| Worker Core (portable) | `worker/CLAUDE.md` |
-| Environment Adapter (template) | `worker/environment_adapter.example.md` |
-| Templates de proyecto | `templates/*.md` |
-| Arquitectura general | `docs/ai_work_system_architecture_v1.md` |
-| Evals del Orchestrator | `evals/*.md` |
+| Path | Quién lo usa | Para qué | Estado | Cómo se despliega |
+|---|---|---|---|---|
+| `README.md` | Human User | Instalar, usar y evolucionar el sistema | Requerido | Se lee. No se despliega. |
+| `orchestrator/instructions.md` | Orchestrator | Comportamiento always-on: UX, workflow, evidencia, criticidad, routing, delegación, adopción | Requerido | Se pega en el campo *Instructions* del GPT |
+| `orchestrator/knowledge/worker_protocol.md` | Orchestrator | Contrato Orchestrator ↔ Worker: Job Packet, autonomía A0–A3, stop conditions, verificación | Requerido | Se sube como Knowledge del GPT |
+| `orchestrator/knowledge/planning_protocol.md` | Orchestrator | Tarea efímera vs proyecto persistente; cómo crear context y plan | Requerido | Se sube como Knowledge del GPT |
+| `orchestrator/knowledge/gpt_design_protocol.md` | Orchestrator | Crear, auditar y evolucionar GPTs con gates y rollback | Requerido | Se sube como Knowledge del GPT |
+| `orchestrator/cheatsheet.md` | Human User | Prompts copy-paste para realinear, cerrar fases o pedir delegación | Opcional | Se lee. No se despliega. |
+| `worker/system_prompt.md` | Worker | Worker Core portable: rol, autonomía, integridad, seguridad, código, comunicación, verificación | Requerido | Se despliega como archivo de instrucciones del harness |
+| `worker/environment_adapter.example.md` | Worker | Plantilla del Environment Adapter: sistemas, límites y routing del entorno | Opcional | Se copia **fuera** de este repo y se adapta |
+| `assets/` | Human User | Imágenes de perfil del GPT | Opcional | Se sube al crear el GPT |
+| `.gitignore` | Repo | Evita commitear secretos, temporales y config de editor | Requerido | — |
 
-## 4. Desplegar Orchestrator Prime en ChatGPT
+Los contextos y planes de proyectos **no** viven aquí: son artifacts propietarios de cada proyecto.
+
+## 3. Instalar el Orchestrator
 
 1. Crear un Custom GPT.
-2. **Instructions:** pegar el contenido de `orchestrator/orchestrator_prime_instructions_mvp_v1.md`.
-3. **Knowledge:** subir los archivos listados en la sección "Knowledge general adoptado" de `orchestrator/orchestrator_prime_mvp_manifest_v1.md`.
-4. **Capabilities:** las indicadas en el manifest (búsqueda web, generación de imágenes, intérprete de código/análisis de datos). No habilitar Actions salvo necesidad concreta.
-5. Guardar/publicar según corresponda a tu cuenta.
+2. **Instructions:** pegar el contenido de `orchestrator/instructions.md`.
+3. **Knowledge:** subir los tres archivos de `orchestrator/knowledge/`.
+4. **Capabilities:** el baseline adoptado tiene habilitadas búsqueda web, intérprete de código / análisis de datos y generación de imágenes. Las dos primeras las usan los protocolos (evidencia desde documentación oficial, análisis de archivos y repositorios); la tercera es opcional.
+5. **Actions:** ninguna por defecto. Añadir solo ante una necesidad concreta de actuar sobre un sistema externo.
+6. Opcional: usar una imagen de `assets/` como perfil.
 
-Para reconstruir el Orchestrator desde cero sin depender de un chat histórico, seguir la sección "Regla de reconstrucción" del manifest.
+Los contextos y planes de un proyecto se suben al Knowledge del GPT solo mientras ese proyecto está activo, y se reemplazan al cerrar cada fase.
 
-## 5. Desplegar el Worker de referencia (Claude Code)
+## 4. Instalar el Worker
 
-1. Colocar `worker/CLAUDE.md` como configuración global o de proyecto de Claude Code (según cómo organices tu propio setup local).
-2. El Worker Core importa un Environment Adapter (`@environment_adapter.md`). Sin ese archivo, el Worker sigue operando con las reglas generales del Core, pero sin routing a herramientas/entornos específicos.
+Fuente de verdad: **`worker/system_prompt.md`**. El mismo contenido sirve para cualquier ejecutor compatible; solo cambia el archivo donde se deposita.
 
-## 6. Adaptar el Worker al entorno
+- **Claude Code:** desplegar el contenido como `CLAUDE.md` en el scope deseado (global para todo el trabajo, o dentro de un proyecto).
+- **Antigravity CLI:** desplegar el contenido en el archivo de instrucciones que soporte el harness (`AGENTS.md` o el equivalente correspondiente al scope).
 
-1. Copiar `worker/environment_adapter.example.md` a la ubicación que tu Environment Adapter real debe ocupar (fuera de este repo público).
-2. Completar los routers, restricciones y sistemas propios de tu entorno.
-3. No subir ese adapter real a un repositorio público: contiene, por diseño, lo específico de tu entorno.
+Verificar el deployment abriendo una sesión nueva y limpia y comprobando que el Worker carga el Core y, si existe, el Environment Adapter.
 
-## 7. Qué pertenece al repo público vs al deployment privado
+## 5. Environment Adapter
 
-Repo público (`ai_work_system/`, este repositorio):
-- Worker Core;
-- Instructions/Knowledge/manifest del Orchestrator;
-- templates genéricos;
-- documentación de arquitectura;
-- evals.
+Opcional. Sirve cuando el entorno tiene sistemas, límites o rutas propias que el Worker debe conocer: qué existe, qué es read-only, qué paths son legibles o escribibles, y dónde está el detalle.
 
-Deployment privado (fuera de este repo, p. ej. `ai_work_system_private/` como repositorio independiente):
-- Environment Adapter real;
-- routers/config local;
-- credenciales, hosts, infraestructura corporativa;
-- contexto y planes de proyectos concretos.
+1. Copiar `worker/environment_adapter.example.md` fuera de este repositorio.
+2. Completar los sistemas, restricciones y rutas reales del entorno.
+3. Enlazarlo según el mecanismo del harness (por ejemplo, un import desde el archivo de instrucciones del Worker).
 
-## 8. Cómo iniciar un proyecto
+Puede apuntar a un router propio —un índice estructurado de herramientas y fuentes— cuando el entorno sea complejo. Las credenciales nunca van en el adapter ni en Git: variables de entorno o un mecanismo local aprobado.
 
-### Efímero
-Tarea autocontenida, sin necesidad de continuidad entre sesiones. Planificación dentro del chat, sin artifact de estado. Ver `orchestrator/knowledge/orchestrator_planning_persistence_policy_v1.md`.
+## 6. Uso
 
-### Persistente
-Trabajo multi-sesión con decisiones y gates que deben sobrevivir:
-1. Copiar `templates/context_project.md` → `context_<project>.md`.
-2. Copiar `templates/plan_project.md` → `plan_<project>.md`.
-3. Mantener el contexto como mapa durable y el plan como estado de ejecución.
+El Usuario explica su intención al Orchestrator, no una tarea técnica ya traducida.
 
-## 9. Cómo verificar el deployment
+El Orchestrator decide:
 
-- Orchestrator: abrir una conversación nueva y correr un subconjunto de los casos en `evals/`. Confirmar que responde según lo esperado antes de dar por bueno un cambio.
-- Worker: abrir una sesión nueva de Claude Code y confirmar que carga el Worker Core y (si existe) el Environment Adapter correctamente.
+- resolverlo él mismo;
+- guiar al Usuario paso a paso;
+- delegar en el Worker con un Job Packet;
+- abrir un proyecto persistente.
 
-## 10. Workflow de evolución (lifecycle de cambio)
+Cuando delega, indica antes al Usuario **sesión, modelo, esfuerzo y modo**. Después verifica la evidencia del Worker antes de darla por buena.
+
+## 7. Proyectos
+
+**Tarea efímera:** autocontenida, sin continuidad durable. Se planifica en el chat y muere con la tarea.
+
+**Proyecto persistente:** varias sesiones, decisiones, gates o artifacts coordinados. Usa dos artifacts:
+
+```text
+context_<project>.md    → mapa durable: propósito, owners, estado durable, decisiones, límites
+plan_<project>_<mission>.md → una misión finita: fases, gates, siguiente tarea, criterios de finalización
+```
+
+Un plan tiene que poder terminar. Si aparece una misión materialmente distinta, se abre un plan nuevo en vez de extender el vigente. Detalle en `orchestrator/knowledge/planning_protocol.md`.
+
+## 8. Evolución del CORE
 
 ```text
 main
   → branch de cambio
-    → patch pequeño
-      → commit
-        → eval / smoke test
-          → sandbox
-            → PASS/FAIL
-              → merge o rollback
-                → tag (si corresponde)
+    → candidate (patch mínimo)
+      → Preview / sesión limpia
+        → smoke test dirigido + uso real
+          → PASS: merge   |   FAIL: rollback
 ```
 
-- **Orchestrator:** usar Preview/draft como sandbox antes de adoptar un cambio de Instructions/Knowledge.
-- **Worker:** usar una sesión nueva y limpia como sandbox antes de confiar en un cambio de configuración.
+- **Orchestrator:** probar el cambio en Preview/draft antes de actualizar el GPT.
+- **Worker:** probar el cambio en una sesión nueva y limpia antes de confiar en él.
 
-No mergear a `main` sin evidencia de que el cambio pasó su verificación mínima.
+No mergear a `main` sin evidencia de que el cambio pasó su verificación mínima. La adopción final es un gate humano.
 
-## 11. Versionado
+## 9. Versionado
 
-- `v0.x.y` mientras no exista una primera release pública estable.
-- `v1.0.0` marca la primera release estable.
+SemVer para el repositorio completo, mediante tags de Git:
 
-Los archivos individuales pueden llevar su propio sufijo `_vN` mientras ese artifact esté en evolución activa; esto es independiente del versionado semántico del repositorio en su conjunto.
+- `v0.x.y` mientras no exista una primera release pública estable;
+- `v1.0.0` para la primera release estable;
+- después, *patch* para correcciones, *minor* para capacidades nuevas compatibles, *major* para cambios que rompen el despliegue existente.
+
+Los filenames son estables y no llevan sufijo `_vN`. Git conserva el historial. Los archivos de Knowledge llevan `artifact_version` en su frontmatter para identificar su revisión lógica.
+
+## 10. Público vs privado
+
+Este repositorio es público y contiene únicamente comportamiento general y portable.
+
+Fuera de él, en un deployment privado: el Environment Adapter real, routers y config local, hosts e infraestructura, credenciales, y los contextos y planes de proyectos concretos.
