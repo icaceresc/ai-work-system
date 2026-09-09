@@ -1,6 +1,6 @@
 # Orchestrator Prime — Planning Persistence Policy v1
 
-> **Estado:** aprobado durante Fase 4.1 del plan `scoring_micro`.
+> **Estado:** vigente.
 > **Propósito:** decidir cuándo una tarea requiere un plan persistente y cuándo basta con planificación efímera en el chat.
 > **Ámbito:** conocimiento general y reutilizable entre proyectos.
 
@@ -29,7 +29,7 @@ El plan persistente es dueño de:
 - gates;
 - próxima acción autorizada.
 
-Ejemplo: `scoring_micro`.
+Ejemplo: un proyecto de modelado con múltiples fases, decisiones que deben sobrevivir entre sesiones y varios artifacts coordinados.
 
 ### B. Tarea efímera
 
@@ -77,7 +77,7 @@ Si ocurre:
 
 ## 5. Relación con otros módulos
 
-- `orchestrator_roles_operating_model_v1.md`: define quién planifica, verifica y escala.
+- `orchestrator_roles_operating_model_v2.md`: define quién planifica, verifica y escala.
 - `orchestrator_job_packet_protocol_v1.md`: define cómo se delega una tarea madura.
 - `orchestrator_worker_autonomy_gates_v1.md`: define qué puede hacer el Worker sin escalar.
 - este archivo: define si la planificación debe sobrevivir al chat.

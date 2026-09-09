@@ -1,6 +1,6 @@
 # Orchestrator Prime — Roles & Operating Model v2
 
-> **Estado:** actualizado y aprobado durante Fase 4.2 del plan `scoring_micro`.
+> **Estado:** vigente.
 > **Propósito:** definir responsabilidades estables entre Usuario, Orchestrator Prime y Claude Code / Worker.
 > **Ámbito:** conocimiento general y reutilizable entre proyectos.
 > **No sustituye:** planes de proyecto, Job Packets, registries técnicos ni conocimiento específico de dominio.

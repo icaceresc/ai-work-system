@@ -1,6 +1,6 @@
 # AI Work System — Architecture v1
 
-> **Estado:** aprobado durante Fase 4.1 del plan `scoring_micro`.
+> **Estado:** vigente.
 > **Propósito:** definir una arquitectura portable para trabajar con un Usuario, un Orchestrator IA y uno o más Workers técnicos.
 > **Principio:** separar comportamiento general de contexto de entorno y de proyecto desde el inicio.
 
@@ -171,22 +171,36 @@ Prioriza:
 
 ## 10. Portabilidad
 
-Objetivo deseado:
+Baseline adoptado:
 
 ```text
-ai-work-system/
-├── orchestrator/
-│   └── knowledge modules
-├── worker-core/
-│   └── portable Claude Code configuration
-├── environments/
-│   ├── personal/
-│   └── freelance/
-└── templates/
-    └── reusable task/project patterns
+AI Work System/                  # contenedor externo, no es un repositorio Git
+├── ai_work_system/               # repo portable/publicable
+└── ai_work_system_private/       # repo privado independiente (deployment, entorno real)
 ```
 
-La configuración específica del entorno laboral debe permanecer separada y solo salir de ese entorno si las políticas aplicables lo permiten.
+`ai_work_system_private` no forma parte del repo público y no se documenta en detalle aquí.
+
+Estructura conceptual del repo público (`ai_work_system/`):
+
+```text
+ai_work_system/
+├── README.md
+├── orchestrator/
+│   ├── instructions
+│   ├── manifest
+│   ├── cheatsheet
+│   └── knowledge/
+├── worker/
+│   ├── CLAUDE.md
+│   └── environment_adapter.example.md
+├── templates/
+├── docs/
+├── evals/
+└── assets/
+```
+
+La configuración específica de un entorno de trabajo real (routers, credenciales, infraestructura corporativa) pertenece al deployment privado del Worker, no al repo público.
 
 ## 11. Regla de evolución
 

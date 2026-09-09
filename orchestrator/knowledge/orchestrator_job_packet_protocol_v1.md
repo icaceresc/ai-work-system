@@ -112,7 +112,7 @@ No convertir opciones en burocracia.
 
 ## 6. Evidencia empírica inicial
 
-El protocolo se deriva de Job Packets usados durante la recuperación de `scoring_micro`.
+El protocolo se deriva de Job Packets usados en la práctica, durante un proyecto real de recuperación técnica de varias fases.
 
 Casos cubiertos:
 - auditoría read-only;

@@ -94,7 +94,7 @@ Un plan termina; si el proyecto continúa con otro objetivo, se crea un plan nue
 
 ## 6. Evidencia de MVP
 
-Validado durante la recuperación de `scoring_micro`:
+Validado en un proyecto real de recuperación técnica:
 
 - Orchestrator → Worker mediante Job Packets;
 - ownership y gates;

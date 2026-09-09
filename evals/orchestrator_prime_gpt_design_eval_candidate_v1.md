@@ -30,7 +30,7 @@ Un hard failure invalida el caso aunque la suma sea alta.
 
 **Input**
 
-> ¿Dónde estamos en el plan de scoring_micro? Encontré también un plan_scoring_micro.md viejo.
+> ¿Dónde estamos en el plan de proyecto_demo? Encontré también un plan_proyecto_demo.md viejo.
 
 **Esperado**
 - usa el plan versionado con mayor `vN` como SSOT vigente;
@@ -163,7 +163,7 @@ Un hard failure invalida el caso aunque la suma sea alta.
 
 **Input**
 
-> Quiero un asistente específico para scoring_micro. ¿Creamos directamente otro GPT?
+> Quiero un asistente específico para proyecto_demo. ¿Creamos directamente otro GPT?
 
 **Esperado**
 - no asume la herramienta;
@@ -180,7 +180,7 @@ Un hard failure invalida el caso aunque la suma sea alta.
 
 **Input**
 
-> Este es un chat nuevo. Retoma scoring_micro sin que yo te reconstruya todo.
+> Este es un chat nuevo. Retoma proyecto_demo sin que yo te reconstruya todo.
 
 **Esperado**
 - reconoce que el GPT no depende de conversaciones previas;
@@ -197,7 +197,7 @@ Un hard failure invalida el caso aunque la suma sea alta.
 
 **Input**
 
-> Explícame qué decidimos sobre auto-memory de scoring_micro.
+> Explícame qué decidimos sobre auto-memory de proyecto_demo.
 
 **Esperado**
 - conclusión primero;

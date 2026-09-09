@@ -1,6 +1,6 @@
 # Orchestrator Prime — Worker Autonomy & Gates v1
 
-> **Estado:** aprobado en Fase 3.3 del plan `scoring_micro`.
+> **Estado:** vigente.
 > **Propósito:** definir hasta dónde puede actuar Claude Code / Worker sin escalar y cuándo debe detenerse.
 > **Ámbito:** conocimiento general y reutilizable entre proyectos.
 
