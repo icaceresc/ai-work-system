@@ -30,7 +30,7 @@ intención → mini-plan temporal → ejecución / Job Packet → verificación 
 
 El mini-plan muere con la tarea.
 
-Una tarea efímera puede producir conocimiento durable. Si ocurre, persistir esa decisión o regla en su Project control file propietario, sin convertir la tarea entera en un proyecto persistente.
+Una tarea efímera puede producir conocimiento durable. Si ocurre, persistir esa decisión o regla en la fuente de verdad durable que le corresponda, sin convertir por eso la tarea entera en un proyecto persistente.
 
 ## 2. Proyecto persistente
 
@@ -87,9 +87,9 @@ Contenido:
 - **Decisiones adoptadas** — qué se decidió, por qué y cuándo.
 - **Límites** — qué queda explícitamente fuera.
 - **Fuentes de verdad** — dónde vive el detalle real.
-- **Cómo reconstruir** — leer este archivo, leer el plan activo, recuperar detalle desde los Project control files propietarios. No usar el historial del chat como fuente de verdad.
+- **Cómo reconstruir** — leer este archivo, leer el plan activo y recuperar el detalle desde las fuentes de verdad propietarias. No usar el historial del chat como fuente de verdad.
 
-No duplicar en el contexto el detalle que ya vive en sus Project control files propietarios.
+No duplicar en el contexto detalle que ya vive en su fuente de verdad propietaria.
 
 ## 5. Plan control file
 

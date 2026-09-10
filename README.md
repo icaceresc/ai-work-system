@@ -165,6 +165,8 @@ PROJECT
 
 `context_<project>.md`, `plan_<project>_<mission>.md` y, si existe, `ideas_<project>.md` son **Project control files**: gobiernan el estado y el scope del proyecto o de una misión concreta. "Project control file" describe la responsabilidad del archivo, no una ubicación física universal; dónde vive depende del workflow adoptado por cada proyecto. Detalle en `orchestrator/knowledge/planning_protocol.md`.
 
+Los **Project repo files** —código, notebooks, tests, specs y configuración— contienen el trabajo técnico; los Project control files gobiernan su estado y scope.
+
 ## 8. Evolución del CORE
 
 ```text
