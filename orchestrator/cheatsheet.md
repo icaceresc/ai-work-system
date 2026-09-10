@@ -70,16 +70,20 @@ Para cerrar un chat que se degrada o se alarga, y retomarlo donde quedó.
 
 ```text
 Antes de cerrar este chat:
-1. actualiza el Estado del plan que tienes en tu Conocimiento;
-2. genera un handoff con lo necesario para retomar exactamente desde aquí;
-3. dame el prompt inicial para arrancar el chat nuevo con ese handoff y el plan actualizado.
+
+1. si acabamos de cerrar una fase, actualiza el plan con el estado verificado;
+   si seguimos dentro de la misma fase, no lo modifiques;
+2. genera un handoff corto con lo necesario para retomar exactamente desde aquí;
+3. dame el prompt inicial para el chat nuevo usando las fuentes vigentes y ese handoff.
 ```
 
 **Al retomar:**
 
-```text
-Retoma <proyecto> desde el contexto y el plan que tienes en tu Conocimiento.
-No reconstruyas desde conversaciones anteriores.
+Retoma <proyecto> desde el contexto y el plan vigentes.
+
+Usa el handoff solo para recuperar el estado transitorio que todavía no
+pertenezca al plan. No reconstruyas el proyecto desde conversaciones anteriores.
+
 Dime en 5 líneas: dónde estamos, qué gate está abierto y cuál es la
 siguiente tarea.
 ```
