@@ -15,42 +15,58 @@ Realinea tu forma de trabajo:
 - una sola siguiente tarea aplicable por vez.
 ```
 
-## Cuestionar el scope
+## Frenar scope creep
 
-Úsalo cuando notes que el trabajo se está expandiendo.
+Úsalo cuando notes que el trabajo se está expandiendo más allá de lo acordado.
 
 ```text
-Antes de seguir: ¿esto sigue dentro del objetivo del plan vigente?
-Dime qué parte es scope original, qué parte es scope nuevo, y qué pasa si dejamos fuera lo nuevo.
-Si es una misión distinta, propón cerrarla como plan aparte en vez de extender este.
+Esto parece salirse del objetivo. Comprueba si realmente hace falta para
+cerrar esto como DONE. Si no hace falta, déjalo fuera.
+No metas ideas futuras ni nice-to-haves dentro de esta misión.
+```
+
+## Cuestionar o auditar una decisión
+
+Antes de adoptar algo o después de haberlo adoptado.
+
+**Antes de decidir:**
+
+```text
+Antes de adoptar esto: busca evidencia en contra, alternativas reales y
+señales de sobreingeniería. Dime qué suposiciones estás dando por buenas.
+```
+
+**Después de decidir:**
+
+```text
+Reconstruye qué decidimos, por qué, con qué evidencia y con qué
+limitaciones o riesgos aceptados.
 ```
 
 ## Pedir delegación al Worker
 
 ```text
-¿Esta tarea conviene delegarla al Worker?
-Si sí, prepárame el Job Packet e indícame antes: sesión, modelo, esfuerzo y modo.
+Quiero delegar esto al Worker. Madura tú la tarea y prepárale la
+instrucción completa; yo no la redacto.
+Dime antes: sesión, modelo, esfuerzo y modo.
+Verifica el resultado antes de dármelo por bueno.
 ```
 
-## Revisar el estado del plan
+## Recuperar alineación
+
+Úsalo cuando el resultado ya no coincide con lo acordado.
 
 ```text
-Lee el plan que tienes en tu Conocimiento.
-Actualiza su Estado hasta lo último que hemos trabajado. Solo el Estado, no el contenido del plan.
-Devuélveme el archivo actualizado para sobreescribirlo en tu Conocimiento.
+Esto no es lo que acordamos. Vuelve a las fuentes de verdad vigentes,
+identifica el punto exacto donde nos desviamos y corrige solo lo
+necesario. No reconstruyas todo desde este chat.
 ```
 
-## Retomar un proyecto en un chat nuevo
+## Continuar entre chats
 
-```text
-Chat nuevo. Retoma <proyecto> desde el contexto y el plan que tienes en tu Conocimiento.
-No reconstruyas desde conversaciones anteriores.
-Dime en 5 líneas: dónde estamos, qué gate está abierto y cuál es la siguiente tarea.
-```
+Para cerrar un chat que se degrada o se alarga, y retomarlo donde quedó.
 
-## Handover a un chat nuevo
-
-Úsalo cuando el chat se degrada o se vuelve demasiado largo.
+**Antes de cerrar:**
 
 ```text
 Antes de cerrar este chat:
@@ -59,12 +75,31 @@ Antes de cerrar este chat:
 3. dame el prompt inicial para arrancar el chat nuevo con ese handoff y el plan actualizado.
 ```
 
-## Cerrar una fase o un proyecto
+**Al retomar:**
+
+```text
+Retoma <proyecto> desde el contexto y el plan que tienes en tu Conocimiento.
+No reconstruyas desde conversaciones anteriores.
+Dime en 5 líneas: dónde estamos, qué gate está abierto y cuál es la
+siguiente tarea.
+```
+
+## Dar más autonomía
+
+Para tareas ya definidas, mecánicas y verificables, donde las decisiones materiales ya están tomadas.
+
+```text
+Esta parte ya está definida y es mecánica. Dale al Worker autonomía
+suficiente para completarla y verificarla sin pedirme aprobación por
+microdecisiones.
+```
+
+## Cerrar una fase o misión
 
 ```text
 Cierra esta fase:
 - qué quedó hecho y con qué evidencia;
 - qué gate se aprobó;
 - qué queda explícitamente fuera;
-- actualiza el plan propietario y dime si el plan ya cumple sus criterios de finalización.
+- actualiza el plan propietario y dime si la misión ya cumple sus criterios de finalización.
 ```
