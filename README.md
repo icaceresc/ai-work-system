@@ -30,6 +30,8 @@ El Worker es un **rol**, no un producto. Implementaciones ya usadas: Claude Code
 | `orchestrator/instructions.md` | Orchestrator | Comportamiento always-on: UX, workflow, evidencia, criticidad, routing, delegación, adopción | Requerido | Se pega en el campo *Instructions* del GPT |
 | `orchestrator/knowledge/worker_protocol.md` | Orchestrator | Contrato Orchestrator ↔ Worker: Job Packet, autonomía A0–A3, stop conditions, verificación | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/knowledge/planning_protocol.md` | Orchestrator | Tarea efímera vs proyecto persistente; cómo crear context y plan | Requerido | Se sube como Knowledge del GPT |
+| `orchestrator/knowledge/development_protocol.md` | Orchestrator | Cómo desarrollar sobre un repositorio: spec proporcional, baseline y branch, TDD proporcional, calidad y verificación antes de adoptar | Requerido | Se sube como Knowledge del GPT |
+| `orchestrator/knowledge/model_development_protocol.md` | Orchestrator | Overlay de modelado y ML: problema y target, validación y leakage, baseline, experimentos incrementales, reproducibilidad | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/knowledge/gpt_design_protocol.md` | Orchestrator | Crear, auditar y evolucionar GPTs con gates y rollback | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/cheatsheet.md` | Human User | Prompts copy-paste para realinear, cerrar fases o pedir delegación | Opcional | Se lee. No se despliega. |
 | `worker/worker_core.md` | Worker | Comportamiento portable del rol Worker: autonomía, integridad, seguridad, código, comunicación, verificación | Requerido | Se despliega como archivo de instrucciones del ejecutor |
@@ -43,12 +45,12 @@ Los contextos y planes de proyectos **no** viven aquí: son artifacts propietari
 
 1. Crear un Custom GPT.
 2. **Instructions:** pegar el contenido de `orchestrator/instructions.md`.
-3. **Knowledge:** subir los tres archivos de `orchestrator/knowledge/`.
+3. **Knowledge:** subir los cinco archivos de `orchestrator/knowledge/`.
 4. **Capabilities:** el baseline adoptado tiene habilitadas búsqueda web, intérprete de código / análisis de datos y generación de imágenes. Las dos primeras las usan los protocolos (evidencia desde documentación oficial, análisis de archivos y repositorios); la tercera es opcional.
 5. **Actions:** ninguna por defecto. Añadir solo ante una necesidad concreta de actuar sobre un sistema externo.
 6. Opcional: usar una imagen de `assets/` como perfil.
 
-Los tres Knowledge canónicos llevan frontmatter (`artifact_id`, `artifact_version`, `artifact_type`, `owner`, `status`); las Instructions no lo necesitan.
+Los cinco Knowledge canónicos llevan frontmatter (`artifact_id`, `artifact_version`, `artifact_type`, `owner`, `status`); las Instructions no lo necesitan.
 
 Los contextos y planes de un proyecto se suben al Knowledge del GPT solo mientras ese proyecto está activo, y se reemplazan al cerrar cada fase.
 
