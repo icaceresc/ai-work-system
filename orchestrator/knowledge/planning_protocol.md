@@ -98,11 +98,52 @@ Contenido:
 - **Siguiente tarea** — una sola tarea concreta, no una lista larga.
 - **Criterios de finalización** — condiciones explícitas bajo las cuales el plan se declara terminado.
 
-### Principio crítico
+### Principio crítico — el plan es finito
 
-> Los LLM tienden a expandir el scope. El plan existe para **forzar convergencia y terminar el trabajo**, no para acumular ideas.
+> Los LLM tienden a expandir el scope. El plan existe para **forzar convergencia y terminar el trabajo**, no para almacenar ideas.
 
-Si aparece una misión materialmente distinta: cerrar o separar el plan y abrir uno nuevo. No extender indefinidamente el plan vigente.
+Invariante: **un plan persistente debe poder llegar a DONE mientras siguen existiendo ideas aplazadas.**
+
+El plan activo contiene únicamente el trabajo necesario para completar su misión vigente.
+
+No incorporar al plan:
+
+- ideas futuras;
+- nice-to-haves;
+- automatizaciones opcionales;
+- integraciones posibles;
+- GPTs futuros;
+- mejoras no necesarias para los criterios de finalización actuales;
+- backlog general del proyecto.
+
+Una idea nueva entra al plan solo si cumple las tres condiciones:
+
+1. es materialmente necesaria para cumplir la misión vigente;
+2. respeta sus boundaries;
+3. pasa los gates aplicables.
+
+Si no las cumple, queda fuera del scope actual. Si constituye una misión materialmente distinta: cerrar o separar el plan y abrir uno nuevo si se adopta. No extender indefinidamente el plan vigente.
+
+No uses el plan activo como backlog general.
+
+### Ideas que quedan fuera del plan
+
+Que una idea no entre al plan no significa descartarla.
+
+Si el Usuario pide explícitamente no perder ideas futuras, reconoce la intención y sepárala del scope: la petición legítima es no perderlas, no convertirlas en trabajo comprometido.
+
+Cuando —y solo cuando— haga falta persistencia durable, esas ideas pueden vivir en un artifact aparte y opcional del proyecto, por ejemplo `ideas_<project>.md`. Ese artifact:
+
+- no es un plan;
+- no es autoritativo para la ejecución;
+- no altera la misión vigente;
+- no añade fases;
+- no bloquea los criterios de finalización;
+- no genera trabajo futuro automáticamente.
+
+Cada idea requiere una decisión posterior explícita antes de convertirse en misión.
+
+Si no hace falta persistencia durable, la idea simplemente queda fuera del plan. No es un componente obligatorio del sistema ni una capa nueva: solo existe si el Usuario lo necesita.
 
 ### Frontmatter recomendado
 
@@ -125,13 +166,15 @@ Durante una fase:
 - usar el chat y la evidencia de ejecución para el progreso operativo;
 - no hacer churn del plan por cada micro-paso.
 
+Que aparezca una idea nueva no es motivo para actualizar el plan. La secuencia «apareció una idea → siguiente tarea: actualizar el plan» no está autorizada.
+
 Al cerrar una fase:
 
 1. actualizar el plan propietario (estado, fase completada, gate alcanzado, siguiente tarea);
 2. persistir el artifact actualizado;
 3. reemplazar su copia en el Knowledge del Orchestrator si está desplegada allí, para mantener trazabilidad.
 
-Si aparece información crítica que invalida el plan, escalar antes de continuar: no reescribir el plan silenciosamente para acomodar el desvío.
+La única razón para actualizar el plan fuera del cierre de una fase es que evidencia material nueva lo invalide y exija una decisión o un gate. En ese caso, escalar antes de continuar: no reescribir el plan silenciosamente para acomodar el desvío.
 
 ## 7. Autoridad
 

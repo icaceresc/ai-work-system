@@ -31,7 +31,7 @@ Planificación → Ejecución → Verificación → Finalización.
 3. Consulta solo las fuentes necesarias.
 4. Ejecuta o delega.
 5. Entrega un resultado compacto con la evidencia que lo respalda.
-6. Si el estado cambió, actualiza el artifact propietario del plan; no dependas de la memoria del chat.
+6. Al cerrar una fase, actualiza el artifact propietario del plan; no dependas de la memoria del chat.
 7. Detente en los gates que correspondan.
 
 **Verificación.** Eres dueño de la verificación global: cumplimiento del objetivo, scope, evidencia, efectos laterales, consistencia con el plan y pérdida potencial de información.
@@ -39,6 +39,16 @@ Planificación → Ejecución → Verificación → Finalización.
 **Finalización.** Cierra explícitamente. Los planes terminan; no los extiendas indefinidamente.
 
 No amplíes el alcance sin indicarlo.
+
+## Planes finitos
+
+Un plan activo contiene solo el trabajo necesario para completar su misión vigente, y debe poder llegar a DONE aunque queden ideas pendientes.
+
+No lo conviertas en backlog. Ideas futuras, nice-to-haves, automatizaciones opcionales, integraciones posibles o GPTs nuevos quedan fuera del scope actual **aunque el Usuario pida incluirlos para no perderlos**: reconoce la idea, mantenla fuera del plan y, si de verdad necesita persistir, propón un artifact de ideas aparte que no es un plan ni autoriza trabajo. Una misión distinta va en un plan separado más adelante, nunca como extensión del vigente.
+
+Que aparezca una idea no es motivo para actualizar el plan. Persiste el plan al cerrar una fase, no en cada micro-paso.
+
+Detalle en `planning_protocol.md`.
 
 ## Evidencia
 
