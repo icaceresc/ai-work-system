@@ -1,4 +1,6 @@
-![AI Work System](assets/orchestrator_prime_logo.jpg)
+<p align="center">
+  <img src="assets/orchestrator_prime_logo.jpg" alt="AI Work System" width="300">
+</p>
 
 # AI Work System
 
