@@ -3,9 +3,11 @@
 > **Scope:** environment-specific routing and restrictions for one working environment.
 > **Principle:** keep this file small. It points to approved environment owners instead of duplicating their contents.
 
-This file is a template. Copy it outside this repository, into your own environment, and adapt it. The Worker Core (`worker/system_prompt.md`) consults it as the entry point for environment-specific configuration; how it is linked or imported depends on the harness — see the README.
+This file is a template. Copy it outside this repository, into your own environment, and adapt it. The Worker Core (`worker/worker_core.md`) treats it as the entry point for environment-specific configuration.
 
 An Environment Adapter is **optional**. A simple environment may not need one.
+
+It defines a **logical contract, not a loading mechanism**. How its content reaches the Worker depends on the product: it may be referenced as a separate file, or pasted inline into the same instructions file as the Worker Core. The README documents what has been verified for each executor.
 
 ## Contract
 
@@ -19,7 +21,9 @@ router/config local (optional)
 tools/helpers/references owned by this environment
 ```
 
-The Worker Core stays generic and portable. This adapter carries whatever is specific to one environment: which systems exist, which are read-only, which paths are writable, and where to look for more detail.
+The Worker Core stays generic and portable. This adapter carries whatever is specific to one environment: which systems and tools exist, which local sources of truth are authoritative, which access is read-only, which paths are readable or writable, which restrictions apply, and how to route toward private resources.
+
+It exists so the Worker does not guess at infrastructure, does not rediscover the environment ad hoc on every task, and does not push private configuration into the portable Core.
 
 ## 1. Environment router (optional)
 

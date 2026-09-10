@@ -32,7 +32,7 @@ El Worker es un **rol**, no un producto. Implementaciones ya usadas: Claude Code
 | `orchestrator/knowledge/planning_protocol.md` | Orchestrator | Tarea efímera vs proyecto persistente; cómo crear context y plan | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/knowledge/gpt_design_protocol.md` | Orchestrator | Crear, auditar y evolucionar GPTs con gates y rollback | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/cheatsheet.md` | Human User | Prompts copy-paste para realinear, cerrar fases o pedir delegación | Opcional | Se lee. No se despliega. |
-| `worker/system_prompt.md` | Worker | Worker Core portable: rol, autonomía, integridad, seguridad, código, comunicación, verificación | Requerido | Se despliega como archivo de instrucciones del harness |
+| `worker/worker_core.md` | Worker | Comportamiento portable del rol Worker: autonomía, integridad, seguridad, código, comunicación, verificación | Requerido | Se despliega como archivo de instrucciones del ejecutor |
 | `worker/environment_adapter.example.md` | Worker | Plantilla del Environment Adapter: sistemas, límites y routing del entorno | Opcional | Se copia **fuera** de este repo y se adapta |
 | `assets/` | Human User | Imágenes de perfil del GPT | Opcional | Se sube al crear el GPT |
 | `.gitignore` | Repo | Evita commitear secretos, temporales y config de editor | Requerido | — |
@@ -48,26 +48,73 @@ Los contextos y planes de proyectos **no** viven aquí: son artifacts propietari
 5. **Actions:** ninguna por defecto. Añadir solo ante una necesidad concreta de actuar sobre un sistema externo.
 6. Opcional: usar una imagen de `assets/` como perfil.
 
+Los tres Knowledge canónicos llevan frontmatter (`artifact_id`, `artifact_version`, `artifact_type`, `owner`, `status`); las Instructions no lo necesitan.
+
 Los contextos y planes de un proyecto se suben al Knowledge del GPT solo mientras ese proyecto está activo, y se reemplazan al cerrar cada fase.
 
 ## 4. Instalar el Worker
 
-Fuente de verdad: **`worker/system_prompt.md`**. El mismo contenido sirve para cualquier ejecutor compatible; solo cambia el archivo donde se deposita.
+Fuente de verdad: **`worker/worker_core.md`**.
 
-- **Claude Code:** desplegar el contenido como `CLAUDE.md` en el scope deseado (global para todo el trabajo, o dentro de un proyecto).
-- **Antigravity CLI:** desplegar el contenido en el archivo de instrucciones que soporte el harness (`AGENTS.md` o el equivalente correspondiente al scope).
+Este archivo **no reemplaza el system prompt del producto**. Es una capa portable de instrucciones que se suma a lo que el ejecutor ya trae:
 
-Verificar el deployment abriendo una sesión nueva y limpia y comprobando que el Worker carga el Core y, si existe, el Environment Adapter.
+```text
+instrucciones y capacidades nativas del agente
++ Worker Core
++ Environment Adapter (opcional)
++ contexto del proyecto
+= comportamiento efectivo del Worker
+```
+
+Identidad del agente, herramientas, skills, subagentes y comportamiento de interfaz siguen siendo del producto. Este repo no los documenta ni los sustituye.
+
+### Claude Code — deployment probado
+
+Desplegar el contenido de `worker/worker_core.md` en:
+
+```text
+~/.claude/CLAUDE.md
+```
+
+Sin Environment Adapter, no hace falta nada más. Con Adapter, referenciarlo explícitamente desde ese archivo mediante el mecanismo de referencia que soporta Claude Code; la referencia se resuelve y el Adapter puede dirigir después al router y a los helpers del entorno.
+
+### Antigravity CLI 1.2.0 — deployment probado
+
+Desplegar el contenido de `worker/worker_core.md` en:
+
+```text
+~/.gemini/config/AGENTS.md
+```
+
+Comprobado: un archivo en esa ubicación afecta el comportamiento global de las sesiones nuevas.
+
+Sin Environment Adapter, no hace falta nada más. Con Adapter, **incorporar sus instrucciones inline en ese mismo `AGENTS.md`**.
+
+Por qué inline: en el deployment probado no quedó demostrado que un `environment_adapter.md` separado en la misma carpeta se cargue automáticamente, ni que `AGENTS.md` soporte referencias a otros archivos como Claude Code. Esto se documenta para la versión 1.2.0; no se afirma nada sobre versiones futuras.
+
+### Verificar
+
+Abrir una sesión nueva y limpia y comprobar que el Worker aplica las reglas del Core y, si corresponde, las del Adapter.
 
 ## 5. Environment Adapter
 
-Opcional. Sirve cuando el entorno tiene sistemas, límites o rutas propias que el Worker debe conocer: qué existe, qué es read-only, qué paths son legibles o escribibles, y dónde está el detalle.
+Opcional. Sirve cuando el entorno tiene sistemas, herramientas, fuentes de verdad, rutas o restricciones propias que el Worker debe conocer. Evita que adivine infraestructura, que la redescubra en cada tarea y que esa configuración privada acabe dentro del Core portable.
+
+```text
+Worker Core
+    ↓
+Environment Adapter (opcional)
+    ↓
+router (opcional)
+    ↓
+references / helpers / tools
+```
 
 1. Copiar `worker/environment_adapter.example.md` fuera de este repositorio.
 2. Completar los sistemas, restricciones y rutas reales del entorno.
-3. Enlazarlo según el mecanismo del harness (por ejemplo, un import desde el archivo de instrucciones del Worker).
+3. Desplegarlo según lo verificado para tu ejecutor (sección 4): referencia desde el archivo de instrucciones en Claude Code, inline en Antigravity CLI 1.2.0.
 
-Puede apuntar a un router propio —un índice estructurado de herramientas y fuentes— cuando el entorno sea complejo. Las credenciales nunca van en el adapter ni en Git: variables de entorno o un mecanismo local aprobado.
+El adapter define un contrato lógico, no un mecanismo de carga universal. El router no es obligatorio; para entornos complejos, un índice estructurado —por ejemplo un JSON que mapee cada sistema a su referencia o helper aprobado— ha funcionado bien en uso real. Las credenciales nunca van en el adapter ni en Git: variables de entorno o un mecanismo local aprobado.
 
 ## 6. Uso
 
