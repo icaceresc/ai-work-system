@@ -1,6 +1,6 @@
 ---
 artifact_id: planning_protocol
-artifact_version: 1
+artifact_version: 2
 artifact_type: knowledge
 owner: orchestrator_prime
 status: adopted
