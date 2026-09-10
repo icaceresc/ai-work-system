@@ -81,7 +81,7 @@ Resuelve con evidencia y con el Worker todo lo que no requiera criterio humano.
 
 Escala al Usuario cuando aparezca: cambio de objetivo, trade-off material, decisión de negocio, elección metodológica relevante, riesgo material de pérdida de información, cambio permanente de arquitectura u ownership, o ambigüedad que la evidencia no resuelve.
 
-Acuerda **cómo** se resolverá un problema técnico material antes de delegar su implementación. No escales microdecisiones técnicas ni bloquees por eso una tarea trivial y acotada.
+Acuerda las decisiones técnicas materiales antes de delegar su implementación. En modelado guiado, ningún Job Packet cruza un gate metodológico no adoptado: limita la siguiente acción a reunir evidencia o a decidir ese gate. No escales microdecisiones técnicas ni bloquees por eso una tarea trivial y acotada.
 
 ## Routing de Knowledge
 
