@@ -68,7 +68,11 @@ instrucciones y capacidades nativas del agente
 
 Identidad del agente, herramientas, skills, subagentes y comportamiento de interfaz siguen siendo del producto. Este repo no los documenta ni los sustituye.
 
-### Claude Code — deployment probado
+Worker Core portable no implica comportamiento idéntico entre agentes: cada ejecutor trae su propio system prompt, capacidades y comportamiento de interfaz, que este repo no controla.
+
+### Claude Code — reference Worker implementation
+
+Validación conductual PASS con el Worker Core actual. Recomendado para trabajo real.
 
 Desplegar el contenido de `worker/worker_core.md` en:
 
@@ -78,7 +82,9 @@ Desplegar el contenido de `worker/worker_core.md` en:
 
 Sin Environment Adapter, no hace falta nada más. Con Adapter, referenciarlo explícitamente desde ese archivo mediante el mecanismo de referencia que soporta Claude Code; la referencia se resuelve y el Adapter puede dirigir después al router y a los helpers del entorno.
 
-### Antigravity CLI 1.2.0 — deployment probado
+### Antigravity CLI 1.2.0 — experimental / best-effort
+
+Implementación compatible con el Worker Core: la carga del Core vía `~/.gemini/config/AGENTS.md` está comprobada. La paridad de comportamiento con Claude Code **no** está demostrada. Este repo no afirma causa del comportamiento observado en uno u otro ejecutor.
 
 Desplegar el contenido de `worker/worker_core.md` en:
 
@@ -133,14 +139,17 @@ Cuando delega, indica antes al Usuario **sesión, modelo, esfuerzo y modo**. Des
 
 **Tarea efímera:** autocontenida, sin continuidad durable. Se planifica en el chat y muere con la tarea.
 
-**Proyecto persistente:** varias sesiones, decisiones, gates o artifacts coordinados. Usa dos artifacts:
+**Proyecto persistente:** varias sesiones, decisiones, gates o artifacts coordinados.
 
 ```text
-context_<project>.md    → mapa durable: propósito, owners, estado durable, decisiones, límites
-plan_<project>_<mission>.md → una misión finita: fases, gates, siguiente tarea, criterios de finalización
+PROJECT
+├── context_<project>.md              → mapa durable: propósito, owners, estado durable, decisiones, límites
+├── plan_<project>_<mission>.md       → una misión finita: fases, gates, siguiente tarea, criterios de finalización
+├── otros planes, si existen misiones distintas
+└── ideas_<project>.md                → opcional
 ```
 
-Un plan tiene que poder terminar. Si aparece una misión materialmente distinta, se abre un plan nuevo en vez de extender el vigente. Detalle en `orchestrator/knowledge/planning_protocol.md`.
+**Proyecto no es lo mismo que plan.** Un proyecto puede abarcar varias misiones a lo largo del tiempo; cada plan representa exactamente una misión finita y tiene que poder terminar. Misiones distintas van en planes distintos, nunca como extensión del vigente. Ideas futuras no pertenecen al plan activo: `ideas_<project>.md` es opcional, no autoriza ejecución y no bloquea el cierre del plan. Detalle en `orchestrator/knowledge/planning_protocol.md`.
 
 ## 8. Evolución del CORE
 
@@ -167,6 +176,8 @@ SemVer para el repositorio completo, mediante tags de Git:
 - después, *patch* para correcciones, *minor* para capacidades nuevas compatibles, *major* para cambios que rompen el despliegue existente.
 
 Los filenames son estables y no llevan sufijo `_vN`. Git conserva el historial. Los archivos de Knowledge llevan `artifact_version` en su frontmatter para identificar su revisión lógica.
+
+`artifact_version` identifica la revisión **adoptada** de ese Knowledge file, no cada commit ni cada iteración de una branch de cambio. Los commits dentro de una candidate branch no la incrementan; se incrementa cuando una modificación semántica llega a `main` después de que la versión anterior ya estaba adoptada. Git conserva el historial fino de cada cambio; el tag SemVer versiona el AI Work System completo. Los Knowledge actuales están en `artifact_version: 1` porque es su primera revisión canónica adoptable.
 
 ## 10. Público vs privado
 
