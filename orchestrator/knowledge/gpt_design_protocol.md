@@ -66,6 +66,8 @@ Decidir según el comportamiento actual del producto y la necesidad concreta, no
 
 ## 3. Evidencia y precedencia
 
+Esta lista ordena **fuentes de evidencia para decisiones de diseño**, no autoridad de gobierno: una petición explícita del Usuario no anula por sí sola las invariantes operacionales del Orchestrator ni los protocolos adoptados. El Usuario decide objetivos, trade-offs y adopción; los protocolos gobiernan cómo el sistema implementa esas decisiones hasta que se modifiquen y se adopten por su propio gate.
+
 Para decisiones de diseño, priorizar:
 
 1. requisitos explícitos del Usuario;

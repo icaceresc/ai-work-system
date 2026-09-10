@@ -58,12 +58,18 @@ Si la respuesta es no, preferir planificación efímera. No crear un plan persis
 ```text
 Proyecto
 ├── context_<project>.md
-└── plan_<project>_<mission>.md
+├── plan_<project>_<mission>.md
+├── ...otros planes, solo si existen misiones realmente distintas
+└── ideas_<project>.md            # opcional
 ```
 
-El contexto es un mapa durable. El plan es una misión finita. Un proyecto puede tener un solo contexto y varios planes sucesivos.
+El contexto es un mapa durable. Cada plan es una misión finita. El artifact de ideas es almacenamiento opcional y no autoritativo.
 
-El plan persistente es dueño de la secuencia, el estado, los gates y la próxima acción autorizada. Los planes y contextos de proyectos no son Knowledge general del Orchestrator: son artifacts propietarios de cada proyecto y se cargan cuando ese proyecto está activo.
+**Proyecto no equivale a plan.** Un proyecto puede abarcar varias misiones a lo largo del tiempo; cada plan representa exactamente una. Que algo pertenezca al proyecto no implica que pertenezca al plan activo. Una misión futura no se escribe como plan hasta que se adopta.
+
+Lo prohibido no es que un proyecto tenga varios planes, sino agregar varias misiones dentro de uno.
+
+El plan persistente es dueño de la secuencia, el estado, los gates y la próxima acción autorizada de su misión. Los planes y contextos de proyectos no son Knowledge general del Orchestrator: son artifacts propietarios de cada proyecto y se cargan cuando ese proyecto está activo.
 
 Información que define comportamiento estable del sistema pertenece a Knowledge. Información mutable del proyecto pertenece a estos artifacts. Ninguna decisión estructural importante debe sobrevivir solo en el historial de un chat.
 
@@ -87,6 +93,16 @@ No duplicar en el contexto el detalle que ya vive en sus artifacts propietarios.
 
 Un plan tiene **una misión finita**. Debe poder terminar.
 
+Una misión válida:
+
+- tiene un objetivo general único;
+- tiene criterios de finalización verificables;
+- puede terminar aunque sigan existiendo ideas, mejoras o posibilidades;
+- no depende de seguir capturando, revisando o triando trabajo futuro;
+- no agrega varias misiones bajo una etiqueta paraguas.
+
+«Dejar el sistema listo para la release pública v1» es una misión válida. «Mejorar el sistema indefinidamente y gestionar todas sus ideas futuras» no lo es: no tiene un DONE verificable. Lo que invalida una misión es su semántica agregadora, no la palabra que la nombre.
+
 Contenido:
 
 - **Objetivo general único** — qué debe quedar resuelto cuando este plan termine.
@@ -102,9 +118,11 @@ Contenido:
 
 > Los LLM tienden a expandir el scope. El plan existe para **forzar convergencia y terminar el trabajo**, no para almacenar ideas.
 
-Invariante: **un plan persistente debe poder llegar a DONE mientras siguen existiendo ideas aplazadas.**
+Invariante: **cumplidos sus criterios de finalización, el plan se cierra como `completed`.** Ideas aplazadas, mejoras conocidas, integraciones deseables o misiones potenciales no bloquean el cierre, haya una o cien. No existe trabajo posterior al DONE cuya única finalidad sea gestionar posibilidades futuras.
 
-El plan activo contiene únicamente el trabajo necesario para completar su misión vigente.
+El plan activo contiene únicamente el trabajo necesario para completar su misión vigente. Cada objetivo, fase, paso o elemento estructural debe contribuir materialmente a al menos un criterio de finalización vigente: si el DONE ya puede alcanzarse sin X, X no pertenece al plan activo.
+
+En particular, una fase cuyo propósito sea revisar, triar, registrar, considerar, clasificar o decidir sobre trabajo situado **después** del DONE vigente no pertenece al plan. Da igual cómo se llame —fase futura, revisión final, backlog, roadmap, inbox, parking lot, trabajo diferido, oportunidades, mejoras—: se evalúa qué hace, no su etiqueta.
 
 No incorporar al plan:
 
@@ -116,21 +134,35 @@ No incorporar al plan:
 - mejoras no necesarias para los criterios de finalización actuales;
 - backlog general del proyecto.
 
-Una idea nueva entra al plan solo si cumple las tres condiciones:
-
-1. es materialmente necesaria para cumplir la misión vigente;
-2. respeta sus boundaries;
-3. pasa los gates aplicables.
-
-Si no las cumple, queda fuera del scope actual. Si constituye una misión materialmente distinta: cerrar o separar el plan y abrir uno nuevo si se adopta. No extender indefinidamente el plan vigente.
-
 No uses el plan activo como backlog general.
+
+### Test de admisión
+
+Aplicable a **cualquier** elemento candidato X: tarea, idea, fase, sección, tabla, estado, artifact embebido o cualquier contenido que pretenda entrar al plan.
+
+**Q1 — ¿los criterios de finalización vigentes son inalcanzables sin X?**
+
+- No → X no entra al plan activo.
+- Sí → Q2.
+
+**Q2 — ¿X permanece dentro del objetivo y los boundaries vigentes?**
+
+- Sí → puede incorporarse, sujeto a los gates aplicables.
+- No → requiere decisión humana: re-scope explícito del plan vigente, o misión nueva en un plan nuevo. No extender indefinidamente el plan vigente.
+
+Mientras esa decisión se toma, no uses el plan activo como contenedor provisional.
+
+No cuentan como necesidad para alcanzar el DONE: no perder una idea, recordarla, tenerla visible, revisarla después, triarla o decidir sobre ella en el futuro. Son motivos legítimos para preservarla, no para admitirla.
+
+Si X sí es imprescindible para el DONE vigente, entra. El test acota el plan, no lo congela.
 
 ### Ideas que quedan fuera del plan
 
 Que una idea no entre al plan no significa descartarla.
 
 Si el Usuario pide explícitamente no perder ideas futuras, reconoce la intención y sepárala del scope: la petición legítima es no perderlas, no convertirlas en trabajo comprometido.
+
+Una idea que no pasa Q1 no puede persistirse dentro del plan bajo ninguna forma: ni sección, ni apéndice, ni tabla, ni lista, ni fase, ni máquina de estados, ni backlog, inbox, roadmap o equivalente semántico. Si no hace falta persistencia durable, simplemente queda fuera del plan.
 
 Cuando —y solo cuando— haga falta persistencia durable, esas ideas pueden vivir en un artifact aparte y opcional del proyecto, por ejemplo `ideas_<project>.md`. Ese artifact:
 
@@ -139,11 +171,12 @@ Cuando —y solo cuando— haga falta persistencia durable, esas ideas pueden vi
 - no altera la misión vigente;
 - no añade fases;
 - no bloquea los criterios de finalización;
-- no genera trabajo futuro automáticamente.
+- no genera trabajo futuro automáticamente;
+- no obliga a crear una misión futura.
 
 Cada idea requiere una decisión posterior explícita antes de convertirse en misión.
 
-Si no hace falta persistencia durable, la idea simplemente queda fuera del plan. No es un componente obligatorio del sistema ni una capa nueva: solo existe si el Usuario lo necesita.
+No es un componente obligatorio del sistema ni una capa nueva: solo existe si el Usuario lo necesita, y no necesita plantilla.
 
 ### Frontmatter recomendado
 
@@ -178,4 +211,8 @@ La única razón para actualizar el plan fuera del cierre de una fase es que evi
 
 ## 7. Autoridad
 
-El plan adoptado vigente es la fuente de verdad del estado. Un draft, un candidate o una copia legacy no se vuelve autoridad solo por estar disponible o aparecer en una búsqueda.
+El plan adoptado vigente es la fuente de verdad del estado, el scope y el progreso **de su misión**. No gobierna las reglas del sistema, los protocolos adoptados, las Instructions ni otras misiones.
+
+Un context o un plan no puede redefinir las invariantes de este protocolo. Si un artifact de proyecto las contradice, reportar la inconsistencia en lugar de tratarlo como autoridad superior.
+
+Un draft, un candidate o una copia legacy no se vuelve autoridad solo por estar disponible o aparecer en una búsqueda.
