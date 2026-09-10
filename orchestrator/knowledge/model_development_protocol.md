@@ -61,11 +61,33 @@ No son decisiones de conveniencia técnica. Target, población, unidad de observ
 
 La pregunta de disponibilidad temporal —«¿esta feature existe en el momento en que habría que predecir?»— se responde antes de construir features, no después de ver una métrica sospechosamente buena.
 
+**Primera unidad cuando el problema aún no está definido.** Si target, población, unidad de observación, horizonte o momento de predicción no están suficientemente establecidos, todavía no se delega cleaning material, split, feature engineering, baseline, entrenamiento ni tuning: cualquiera de esos trabajos codifica una definición del problema que nadie adoptó.
+
+Si en ese punto hace falta un Worker, la primera delegación es preferentemente **read-only, de recopilación de evidencia**:
+
+- inspeccionar el notebook o el código existente;
+- inspeccionar la documentación y los datos disponibles;
+- identificar qué está ya comprobado, y con qué evidencia;
+- identificar las ambigüedades que quedan abiertas;
+- detectar variables post-evento o candidatas a leakage;
+- devolver evidencia, sin decidir.
+
+Después, el Orchestrator y el Usuario interpretan esa evidencia y adoptan la definición del problema. Recién entonces empieza el trabajo que depende de ella.
+
 ## 3. Datos, validación y leakage
 
-El diseño de validación debe representar cómo se usará el modelo. Es una decisión metodológica material: el Orchestrator debe poder explicar por qué el split elegido representa el uso futuro.
+El diseño de validación debe representar cómo se usará el modelo. Cuando afecta la validez de la evaluación es una decisión metodológica material: el Orchestrator debe poder explicar por qué el split elegido representa el uso futuro, y su gate precede a su implementación.
 
 No imponer split aleatorio. Elegir según la estructura real de los datos: temporal, out-of-time, por grupo o entidad, aleatorio, u otra.
+
+Mientras existan alternativas materiales sin resolver, el Worker puede:
+
+- inspeccionar la estructura temporal, de grupo o de entidad de los datos;
+- medir cardinalidades, volúmenes y distribuciones;
+- proponer alternativas con sus consecuencias;
+- aportar la evidencia que permita decidir.
+
+Lo que no debe hacer es implementar una estrategia de split —ni el código que la presupone— antes de que el Orchestrator y el Usuario adopten la decisión. Un split implementado «provisionalmente» se convierte en el split adoptado por inercia y contamina todo lo que se mida después.
 
 **Frontera de aprendizaje.** Cuando aplique a aprendizaje supervisado:
 
@@ -102,6 +124,16 @@ La métrica se elige antes de ver los resultados y se justifica por el problema,
 
 Relacionarla con: tipo de problema, distribución del target, coste relativo de cada tipo de error, uso previsto y decisión real que se apoya.
 
+**El orden importa.** Primero el problema, el uso previsto y el tipo y coste de error que importa. Solo después:
+
+- la métrica o métricas primarias;
+- las métricas diagnósticas realmente necesarias;
+- la estrategia de threshold, cuando la decisión lo requiera.
+
+No imponer como checklist universal el paquete convencional del tipo de problema —ROC AUC, precision, recall, F1, PR AUC, matriz de confusión y equivalentes—: es la respuesta por defecto de la literatura, no una decisión sobre este problema. Preseleccionarlo antes de saber qué error cuesta más es elegir la métrica por el modelo, precisamente lo que esta sección prohíbe. Cuestionar ese default no significa sustituirlo por otro paquete fijo.
+
+El Worker puede calcular métricas exploratorias cuando ayuden a decidir. Una lista convencional calculada por comodidad no se convierte por eso en criterio de aceptación.
+
 Cuando varias vistas son relevantes —por ejemplo el error global y el error en el segmento que importa—, ninguna métrica única gobierna la decisión automáticamente.
 
 Separar tres cosas al reportar:
@@ -134,9 +166,29 @@ En desarrollo inicial o exploratorio, donde importan el aprendizaje y la auditab
 
 Frecuentemente esa unidad es una celda de notebook. No es una regla de «exactamente una celda»: si una unidad coherente necesita varias, son varias; si una sola celda contiene dos decisiones distintas, son dos unidades.
 
+**Frontera de la unidad.** El tamaño de una unidad no lo fija solo lo que el Usuario puede seguir: lo fija el próximo gate metodológico. Una unidad lógica **no puede cruzar una decisión metodológica material que todavía no está adoptada**. Puede contener varias acciones o celdas técnicas coherentes, pero termina **antes** del siguiente gate.
+
+```text
+problema / target / unidad de observación / horizonte
+→ GATE
+
+diseño de validación / split
+→ GATE
+
+definición del baseline
+→ implementación + evidencia
+
+experimento de feature o de modelo
+→ evidencia + interpretación
+```
+
+Es un ejemplo de dónde caen los gates en un caso típico, no una lista de fases obligatorias: `planning_protocol.md` sigue siendo dueño de los planes y el plan concreto decide su estructura.
+
+Cuando las decisiones metodológicas relevantes ya están adoptadas, esta regla no restringe nada: no quedan gates por cruzar (§ 8).
+
 ```text
 1. El Orchestrator define y, si hay decisión material, debate la siguiente unidad.
-2. El Usuario entiende y aprueba la intención cuando la decisión es material.
+2. El Usuario adopta la decisión material que abre esa unidad; que el Worker considere resuelta la ambigüedad no sustituye esa adopción.
 3. El Worker implementa solo esa unidad o el bloque autorizado.
 4. Se ejecuta y se verifica.
 5. El Worker devuelve evidencia compacta.
@@ -145,6 +197,8 @@ Frecuentemente esa unidad es una celda de notebook. No es una regla de «exactam
 ```
 
 No generar en silencio un notebook completo para pedirle después al Usuario que lo audite hacia atrás. La excepción es una tarea explícitamente autorizada como mecánica o reconstructiva.
+
+**Granularidad del Job Packet.** Con el modo guiado activo, un Job Packet inspecciona o implementa solo hasta el próximo gate material. Un Job Packet demasiado amplio no se corrige agregándole stop conditions: las stop conditions son guardrails para lo que no se previó, no un sustituto de dividir bien el trabajo. Si el Job Packet necesita una stop condition para no cruzar un gate que ya se sabe que está ahí, ese gate es el final del Job Packet.
 
 ## 8. Autonomía proporcional a la madurez
 
