@@ -8,7 +8,7 @@ status: adopted
 
 # Planning Protocol
 
-> **Propósito:** decidir cuándo el trabajo necesita artifacts persistentes, y cómo crearlos y mantenerlos para que el trabajo converja y termine.
+> **Propósito:** decidir cuándo el trabajo necesita Project control files, y cómo crearlos y mantenerlos para que el trabajo converja y termine.
 > **Ámbito:** conocimiento general, reutilizable entre proyectos.
 > **Principio:** persistir un plan solo cuando la continuidad futura tenga valor material.
 
@@ -21,7 +21,7 @@ Usar planificación efímera dentro del chat cuando la tarea:
 - es autocontenida;
 - puede completarse razonablemente sin continuidad durable;
 - no deja dependencias importantes;
-- no necesita un artifact de estado;
+- no necesita un Project control file de estado;
 - puede cerrarse con resultado + verificación.
 
 ```text
@@ -30,16 +30,16 @@ intención → mini-plan temporal → ejecución / Job Packet → verificación 
 
 El mini-plan muere con la tarea.
 
-Una tarea efímera puede producir conocimiento durable. Si ocurre, persistir esa decisión o regla en su artifact propietario, sin convertir la tarea entera en un proyecto persistente.
+Una tarea efímera puede producir conocimiento durable. Si ocurre, persistir esa decisión o regla en su Project control file propietario, sin convertir la tarea entera en un proyecto persistente.
 
 ## 2. Proyecto persistente
 
-Usar artifacts persistentes cuando el trabajo:
+Usar Project control files cuando el trabajo:
 
 - abarca varias sesiones;
 - acumula decisiones o gates;
 - tiene dependencias entre fases;
-- coordina múltiples artifacts;
+- coordina múltiples Project control files;
 - necesita estado verificable para retomarse;
 - haría costoso perder el contexto.
 
@@ -51,9 +51,9 @@ Antes de crear un proyecto persistente, responder explícitamente:
 
 Si la respuesta es no, preferir planificación efímera. No crear un plan persistente preventivamente "por si acaso".
 
-**Promover** una tarea efímera a proyecto persistente si durante la ejecución aparece trabajo multi-sesión, decisiones materiales que deben sobrevivir, varios artifacts coordinados, dependencias nuevas, múltiples gates o necesidad clara de reanudación futura.
+**Promover** una tarea efímera a proyecto persistente si durante la ejecución aparece trabajo multi-sesión, decisiones materiales que deben sobrevivir, varios Project control files coordinados, dependencias nuevas, múltiples gates o necesidad clara de reanudación futura.
 
-## 3. Modelo de artifacts
+## 3. Modelo de Project control files
 
 ```text
 Proyecto
@@ -63,17 +63,19 @@ Proyecto
 └── ideas_<project>.md            # opcional
 ```
 
-El contexto es un mapa durable. Cada plan es una misión finita. El artifact de ideas es almacenamiento opcional y no autoritativo.
+`context_<project>.md`, `plan_<project>_<mission>.md` y, cuando exista, `ideas_<project>.md` son **Project control files**: gobiernan el estado y el scope del proyecto o de una misión concreta. "Project control file" describe una responsabilidad lógica, no una ubicación física universal; este protocolo no impone dónde vive ni exige Knowledge ni sincronización automática — depende del workflow adoptado por cada proyecto.
+
+El contexto es un mapa durable. Cada plan es una misión finita. El Project control file de ideas es almacenamiento opcional y no autoritativo.
 
 **Proyecto no equivale a plan.** Un proyecto puede abarcar varias misiones a lo largo del tiempo; cada plan representa exactamente una. Que algo pertenezca al proyecto no implica que pertenezca al plan activo. Una misión futura no se escribe como plan hasta que se adopta.
 
 Lo prohibido no es que un proyecto tenga varios planes, sino agregar varias misiones dentro de uno.
 
-El plan persistente es dueño de la secuencia, el estado, los gates y la próxima acción autorizada de su misión. Los planes y contextos de proyectos no son Knowledge general del Orchestrator: son artifacts propietarios de cada proyecto y se cargan cuando ese proyecto está activo.
+El plan persistente es dueño de la secuencia, el estado, los gates y la próxima acción autorizada de su misión. Los planes y contextos de proyectos no son Knowledge general del Orchestrator: son Project control files propios de cada proyecto y se cargan cuando ese proyecto está activo.
 
-Información que define comportamiento estable del sistema pertenece a Knowledge. Información mutable del proyecto pertenece a estos artifacts. Ninguna decisión estructural importante debe sobrevivir solo en el historial de un chat.
+Información que define comportamiento estable del sistema pertenece a Knowledge. Información mutable del proyecto pertenece a estos Project control files. Ninguna decisión estructural importante debe sobrevivir solo en el historial de un chat.
 
-## 4. Context artifact
+## 4. Context control file
 
 Debe ser **reconstructivo, no un diario**. Permite retomar el proyecto sin releer conversaciones.
 
@@ -85,11 +87,11 @@ Contenido:
 - **Decisiones adoptadas** — qué se decidió, por qué y cuándo.
 - **Límites** — qué queda explícitamente fuera.
 - **Fuentes de verdad** — dónde vive el detalle real.
-- **Cómo reconstruir** — leer este archivo, leer el plan activo, recuperar detalle desde los artifacts propietarios. No usar el historial del chat como fuente de verdad.
+- **Cómo reconstruir** — leer este archivo, leer el plan activo, recuperar detalle desde los Project control files propietarios. No usar el historial del chat como fuente de verdad.
 
-No duplicar en el contexto el detalle que ya vive en sus artifacts propietarios.
+No duplicar en el contexto el detalle que ya vive en sus Project control files propietarios.
 
-## 5. Plan artifact
+## 5. Plan control file
 
 Un plan tiene **una misión finita**. Debe poder terminar.
 
@@ -164,7 +166,7 @@ Si el Usuario pide explícitamente no perder ideas futuras, reconoce la intenci�
 
 Una idea que no pasa Q1 no puede persistirse dentro del plan bajo ninguna forma: ni sección, ni apéndice, ni tabla, ni lista, ni fase, ni máquina de estados, ni backlog, inbox, roadmap o equivalente semántico. Si no hace falta persistencia durable, simplemente queda fuera del plan.
 
-Cuando —y solo cuando— haga falta persistencia durable, esas ideas pueden vivir en un artifact aparte y opcional del proyecto, por ejemplo `ideas_<project>.md`. Ese artifact:
+Cuando —y solo cuando— haga falta persistencia durable, esas ideas pueden vivir en un Project control file aparte y opcional del proyecto, por ejemplo `ideas_<project>.md`. Ese Project control file:
 
 - no es un plan;
 - no es autoritativo para la ejecución;
@@ -204,7 +206,7 @@ Que aparezca una idea nueva no es motivo para actualizar el plan. La secuencia �
 Al cerrar una fase:
 
 1. actualizar el plan propietario (estado, fase completada, gate alcanzado, siguiente tarea);
-2. persistir el artifact actualizado;
+2. persistir el Project control file actualizado;
 3. reemplazar su copia en el Knowledge del Orchestrator si está desplegada allí, para mantener trazabilidad.
 
 La única razón para actualizar el plan fuera del cierre de una fase es que evidencia material nueva lo invalide y exija una decisión o un gate. En ese caso, escalar antes de continuar: no reescribir el plan silenciosamente para acomodar el desvío.
@@ -213,6 +215,6 @@ La única razón para actualizar el plan fuera del cierre de una fase es que evi
 
 El plan adoptado vigente es la fuente de verdad del estado, el scope y el progreso **de su misión**. No gobierna las reglas del sistema, los protocolos adoptados, las Instructions ni otras misiones.
 
-Un context o un plan no puede redefinir las invariantes de este protocolo. Si un artifact de proyecto las contradice, reportar la inconsistencia en lugar de tratarlo como autoridad superior.
+Un context o un plan no puede redefinir las invariantes de este protocolo. Si un Project control file las contradice, reportar la inconsistencia en lugar de tratarlo como autoridad superior.
 
 Un draft, un candidate o una copia legacy no se vuelve autoridad solo por estar disponible o aparecer en una búsqueda.

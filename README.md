@@ -1,4 +1,8 @@
+![AI Work System](assets/orchestrator_prime_logo.jpg)
+
 # AI Work System
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](LICENSE)
 
 Sistema reproducible de trabajo con IA: un **Human User**, un **Orchestrator** y un **Worker** técnico, bajo delegación explícita y verificable.
 
@@ -22,6 +26,8 @@ Principio: **el Orchestrator absorbe la complejidad, el Worker ejecuta, el Usuar
 
 El Worker es un **rol**, no un producto. Implementaciones ya usadas: Claude Code y Antigravity CLI.
 
+El Orchestrator también es un **rol**. **Orchestrator Prime** es la implementación de referencia de este repo: un Custom GPT construido con `orchestrator/instructions.md` y el Knowledge de `orchestrator/knowledge/`.
+
 ## 2. Qué contiene
 
 | Path | Quién lo usa | Para qué | Estado | Cómo se despliega |
@@ -31,7 +37,7 @@ El Worker es un **rol**, no un producto. Implementaciones ya usadas: Claude Code
 | `orchestrator/knowledge/worker_protocol.md` | Orchestrator | Contrato Orchestrator ↔ Worker: Job Packet, autonomía A0–A3, stop conditions, verificación | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/knowledge/planning_protocol.md` | Orchestrator | Tarea efímera vs proyecto persistente; cómo crear context y plan | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/knowledge/development_protocol.md` | Orchestrator | Cómo desarrollar sobre un repositorio: spec proporcional, baseline y branch, TDD proporcional, calidad y verificación antes de adoptar | Requerido | Se sube como Knowledge del GPT |
-| `orchestrator/knowledge/model_development_protocol.md` | Orchestrator | Overlay de modelado y ML: problema y target, validación y leakage, baseline, experimentos incrementales, reproducibilidad | Requerido | Se sube como Knowledge del GPT |
+| `orchestrator/knowledge/model_development_protocol.md` | Orchestrator | Overlay de modelado y ML: desarrollo de modelos guiado y auditable, con gates y autonomía progresiva | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/knowledge/gpt_design_protocol.md` | Orchestrator | Crear, auditar y evolucionar GPTs con gates y rollback | Requerido | Se sube como Knowledge del GPT |
 | `orchestrator/cheatsheet.md` | Human User | Prompts copy-paste para realinear, cerrar fases o pedir delegación | Opcional | Se lee. No se despliega. |
 | `worker/worker_core.md` | Worker | Comportamiento portable del rol Worker: autonomía, integridad, seguridad, código, comunicación, verificación | Requerido | Se despliega como archivo de instrucciones del ejecutor |
@@ -39,7 +45,7 @@ El Worker es un **rol**, no un producto. Implementaciones ya usadas: Claude Code
 | `assets/` | Human User | Imágenes de perfil del GPT | Opcional | Se sube al crear el GPT |
 | `.gitignore` | Repo | Evita commitear secretos, temporales y config de editor | Requerido | — |
 
-Los contextos y planes de proyectos **no** viven aquí: son artifacts propietarios de cada proyecto.
+Los contextos y planes de proyectos **no** viven aquí: son **Project control files** propios de cada proyecto (ver sección 7).
 
 ## 3. Instalar el Orchestrator
 
@@ -51,6 +57,8 @@ Los contextos y planes de proyectos **no** viven aquí: son artifacts propietari
 6. Opcional: usar una imagen de `assets/` como perfil.
 
 Los cinco Knowledge canónicos llevan frontmatter (`artifact_id`, `artifact_version`, `artifact_type`, `owner`, `status`); las Instructions no lo necesitan.
+
+`model_development_protocol.md` complementa a `development_protocol.md`: aporta desarrollo de modelos guiado y auditable, con gates para decisiones metodológicas abiertas y más autonomía una vez que la metodología ya está adoptada.
 
 Los contextos y planes de un proyecto se suben al Knowledge del GPT solo mientras ese proyecto está activo, y se reemplazan al cerrar cada fase.
 
@@ -137,11 +145,13 @@ El Orchestrator decide:
 
 Cuando delega, indica antes al Usuario **sesión, modelo, esfuerzo y modo**. Después verifica la evidencia del Worker antes de darla por buena.
 
+Para realinear al Orchestrator, cuestionar una decisión, pedir más autonomía o delegación, continuar entre chats, o cerrar una fase o misión, `orchestrator/cheatsheet.md` ofrece prompts opcionales listos para copiar y pegar.
+
 ## 7. Proyectos
 
 **Tarea efímera:** autocontenida, sin continuidad durable. Se planifica en el chat y muere con la tarea.
 
-**Proyecto persistente:** varias sesiones, decisiones, gates o artifacts coordinados.
+**Proyecto persistente:** varias sesiones, decisiones, gates o Project control files coordinados.
 
 ```text
 PROJECT
@@ -151,7 +161,9 @@ PROJECT
 └── ideas_<project>.md                → opcional
 ```
 
-**Proyecto no es lo mismo que plan.** Un proyecto puede abarcar varias misiones a lo largo del tiempo; cada plan representa exactamente una misión finita y tiene que poder terminar. Misiones distintas van en planes distintos, nunca como extensión del vigente. Ideas futuras no pertenecen al plan activo: `ideas_<project>.md` es opcional, no autoriza ejecución y no bloquea el cierre del plan. Detalle en `orchestrator/knowledge/planning_protocol.md`.
+**Proyecto no es lo mismo que plan.** Un proyecto puede abarcar varias misiones a lo largo del tiempo; cada plan representa exactamente una misión finita y tiene que poder terminar. Misiones distintas van en planes distintos, nunca como extensión del vigente. Ideas futuras no pertenecen al plan activo: `ideas_<project>.md` es opcional, no autoriza ejecución y no bloquea el cierre del plan.
+
+`context_<project>.md`, `plan_<project>_<mission>.md` y, si existe, `ideas_<project>.md` son **Project control files**: gobiernan el estado y el scope del proyecto o de una misión concreta. "Project control file" describe la responsabilidad del archivo, no una ubicación física universal; dónde vive depende del workflow adoptado por cada proyecto. Detalle en `orchestrator/knowledge/planning_protocol.md`.
 
 ## 8. Evolución del CORE
 
