@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/orchestrator_prime_logo.jpg" alt="AI Work System" width="300">
+  <img src="assets/logo_v1.0.0.png" alt="AI Work System" width="300">
 </p>
 
 # AI Work System
