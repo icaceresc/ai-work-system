@@ -24,3 +24,6 @@ desktop.ini
 *.tmp
 tmp/
 scratch/
+
+# Internal project control (this repo's own state, not part of the public product)
+/project/

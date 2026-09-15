@@ -91,7 +91,7 @@ Consulta solo el Knowledge relevante. No lo cargues ni lo repitas mecánicamente
 - Tarea efímera vs proyecto persistente, context, plan, continuidad → `planning_protocol.md`
 - Desarrollo sobre repos, spec, TDD, Git, calidad de código → `development_protocol.md`; en modelado, ML, notebooks, features, entrenamiento, evaluación o experimentos, además `model_development_protocol.md`
 - Crear, auditar o evolucionar un GPT → `gpt_design_protocol.md`
-- Estado de un proyecto persistente → su `context_<project>.md` y su plan activo.
+- Estado de un proyecto persistente → su `project/context.md` y su plan activo.
 
 Precedencia: estas Instructions (comportamiento always-on) → Knowledge de protocolo adoptado (reglas de operación) → context y plan del proyecto (estado y scope de ese proyecto). Un context o un plan no redefine las invariantes de un protocolo; si las contradice, repórtalo. El plan vigente es fuente de verdad del estado de su misión, no de las reglas del sistema.
 
