@@ -1,6 +1,6 @@
 ---
 artifact_id: model_development_protocol
-artifact_version: 1
+artifact_version: 2
 artifact_type: knowledge
 owner: orchestrator_prime
 status: adopted
@@ -21,6 +21,8 @@ desarrollo de modelos = development_protocol + model_development_protocol
 Del protocolo general se heredan sin cambios: el workflow INTENT → DONE, la spec proporcional, la disciplina de baseline y branch, el TDD proporcional, la calidad de código, los gates humanos, el aprendizaje y accountability del Usuario, y los criterios de completion. Aquí se añade únicamente lo que el modelado necesita y el desarrollo general no cubre.
 
 No prescribe algoritmo, framework, métrica ni estrategia de split.
+
+Optimiza **tiempo hasta una decisión defendible**, no cantidad de análisis ni completitud del artifact. La fiabilidad vive en la evidencia; la simplicidad, en la interfaz que consume el humano.
 
 ## 1. Secuencia de modelado
 
@@ -108,6 +110,26 @@ Una métrica excelente sin explicación plausible es sospecha de leakage, no un 
 
 Reportar el tamaño del dataset usado y, cuando exista un campo temporal relevante, su rango observado. Un resultado del que no se sabe sobre cuántos datos ni sobre qué periodo se calculó no es interpretable.
 
+### EDA orientado a decisión
+
+El EDA existe para **reducir incertidumbre que afecta una decisión posterior**, no para producir un catálogo exhaustivo de tablas y gráficos.
+
+Antes de cada bloque exploratorio, formular qué pregunta responde y qué decisión podría cambiar con su resultado. Si el análisis no puede cambiar una decisión vigente, justificar por qué sigue siendo necesario o dejarlo fuera del critical path.
+
+Dimensiones frecuentes —no checklist obligatorio—:
+
+- población, cobertura y representatividad;
+- calidad y observabilidad del target;
+- distribuciones, missingness y anomalías con impacto material;
+- relación histórica entre variables candidatas y target;
+- redundancia o dependencia entre variables;
+- drift o cambios temporales relevantes;
+- evidencia necesaria para target, población, split, features o evaluación.
+
+Preferir comparaciones con denominadores explícitos, cortes temporales consistentes y reglas congeladas cuando la comparación histórica dependa de ellas.
+
+Cuando una figura comunica mejor el patrón, preferirla sobre una tabla extensa. Mantener tablas cuando el valor exacto sea la evidencia que importa. No imprimir outputs grandes solo porque fueron útiles para depurar.
+
 ## 4. Baseline antes de complejidad
 
 Antes de un modelo complejo, definir un baseline defendible: una heurística, una predicción constante o naive, un modelo simple, la solución actualmente en uso, u otro comparador razonable.
@@ -147,6 +169,26 @@ Separar tres cosas al reportar:
 El test final sirve para estimar el desempeño, no para elegir hyperparameters ni features. Cada vez que se decide algo mirando el test, ese test deja de ser una estimación honesta.
 
 ## 6. Experimentación incremental
+
+### Throughput analítico y criterio de parada
+
+El objetivo operacional es llegar rápido a una **decisión suficientemente sustentada**, sin sacrificar validez.
+
+```text
+pregunta concreta
+→ evidencia mínima fiable
+→ representación útil
+→ interpretación
+→ decisión / gate
+→ siguiente pregunta
+```
+
+- Rigor proporcional al impacto potencial de estar equivocado.
+- Una excepción merece tiempo proporcional a su capacidad de cambiar la decisión.
+- Alcanzada evidencia suficiente para el gate vigente, decidir y avanzar; no perfeccionar el artifact por inercia.
+- No añadir métricas, visualizaciones, features, infraestructura o análisis porque «podrían ser interesantes» si no pueden cambiar una decisión de la misión.
+- Velocidad no significa saltar contratos, leakage checks o validación. Significa evitar trabajo que no compra información accionable.
+- Si una nueva evidencia contradice una decisión adoptada, reabrir el gate correspondiente; no proteger la velocidad a costa de ignorar señal material.
 
 ```text
 baseline → UN cambio material → ejecutar → comparar → interpretar → decidir → siguiente cambio
@@ -198,6 +240,34 @@ Cuando las decisiones metodológicas relevantes ya están adoptadas, esta regla 
 
 No generar en silencio un notebook completo para pedirle después al Usuario que lo audite hacia atrás. La excepción es una tarea explícitamente autorizada como mecánica o reconstructiva.
 
+
+### Notebook human-first
+
+Cuando el notebook sea un artifact humano, su función primaria es ser una **interfaz ejecutable del análisis**, no la memoria del agente, un log de depuración ni un expediente de auditoría.
+
+Patrón preferido para una unidad visible:
+
+```text
+PREGUNTA
+→ CÓDIGO ACOTADO
+→ FIGURA / OUTPUT ÚTIL
+→ INTERPRETACIÓN BREVE
+```
+
+No es una plantilla rígida, pero sí una prueba de diseño: un lector competente debe poder recorrer el notebook y entender por qué existe cada bloque.
+
+Reglas:
+
+- una celda o bloque visible debe tener una función concreta;
+- preferir gráficos, tablas compactas y captions breves cuando reduzcan carga cognitiva;
+- definir un término técnico cuando sea necesario para interpretar el resultado, no antes por completitud;
+- evitar Markdown largo que preserve historia de depuración, decisiones ya cerradas, excepciones de bajo impacto o defensas metodológicas repetidas;
+- checks de integridad que no sean parte del argumento analítico deben ser silenciosos (`assert`, tests o equivalente) o resumirse de forma compacta;
+- no mostrar grandes tablas intermedias si el lector no necesita inspeccionarlas;
+- la complejidad de ejecución puede vivir debajo; la complejidad cognitiva no debe filtrarse innecesariamente al lector.
+
+El notebook puede seguir siendo totalmente reproducible sin contener toda la memoria reconstructiva del trabajo.
+
 **Granularidad del Job Packet.** Con el modo guiado activo, un Job Packet inspecciona o implementa solo hasta el próximo gate material. Un Job Packet demasiado amplio no se corrige agregándole stop conditions: las stop conditions son guardrails para lo que no se previó, no un sustituto de dividir bien el trabajo. Si el Job Packet necesita una stop condition para no cruzar un gate que ya se sabe que está ahí, ese gate es el final del Job Packet.
 
 ## 8. Autonomía proporcional a la madurez
@@ -230,6 +300,39 @@ Preferir los mecanismos que ya existen en el repositorio o el entorno antes de i
 Un sistema de experiment tracking puede aportar parámetros, versión del código, métricas y outputs. No es obligatorio: no lo es si no existe en el entorno, si no aporta valor material, o si su coste supera la trazabilidad que da. Introducirlo es una decisión de adopción con su gate.
 
 Git no garantiza la reproducibilidad de datos externos: versiona el código, no el contenido de una base de datos ni el estado de un sistema remoto en el momento de la consulta. Cuando el dato importa, registrar cómo se obtuvo y cuándo.
+
+### Companion analítico opcional
+
+Si un notebook humano empieza a cargarse con detalle reconstructivo que sí tiene valor para continuidad, Orchestrator o Worker, se puede separar un companion analítico —por ejemplo `*.analysis.md`— **solo cuando resuelva ese problema observable**.
+
+Ese companion:
+
+- vive junto al artifact analítico o donde el repo concreto defina, no convierte `project/` en un contenedor genérico;
+- no es plan, backlog ni Project control file;
+- es reconstructivo y mutable, no un diario cronológico;
+- puede conservar decisiones analíticas, mapa de evidencia, hallazgos de data quality, caveats y referencias a SQL/código;
+- referencia al owner autoritativo cuando la información ya pertenece a otro artifact;
+- no duplica contexto, plan, spec ni historia de chat.
+
+Si el notebook sigue siendo claro sin companion, no crear uno.
+
+### Verificación proporcional al cambio
+
+Verificar exhaustivamente **lo que cambió y su closure mínima de dependencias**. No exigir una re-ejecución total por ritual cuando artifacts congelados, fingerprints, manifests u otras evidencias ya demuestran que lo no tocado permanece igual.
+
+Una verificación mínima válida puede ser:
+
+```text
+estado limpio
+→ dependencias necesarias
+→ unidad modificada completa
+→ invariantes relevantes
+→ diff / schema / artifact checks
+```
+
+Re-ejecutar notebook o pipeline completo cuando el cambio pueda afectar materialmente otras partes, cuando la evidencia congelada no sea suficiente o cuando el criterio de aceptación lo exija.
+
+La verificación proporcional reduce coste sin reducir responsabilidad: si la closure mínima no puede demostrar la afirmación que se quiere hacer, ampliar la verificación.
 
 ## 10. Tests: software determinista vs calidad estadística
 
@@ -266,6 +369,8 @@ Para cada decisión metodológica material, conservar evidencia suficiente para 
 Esa evidencia se reparte según quién sea el dueño correcto: el notebook, el código, la configuración, el sistema de tracking, los artifacts del proyecto o el propio Job Packet. No copiar la misma explicación en todos.
 
 No producir documentación ceremonial. La prueba es funcional: si el Usuario puede responder esas preguntas sin reconstruir la historia desde un chat, la evidencia es suficiente.
+
+La evidencia y la explicación no tienen que vivir en el mismo lugar. **Source → transformación → dataset → figura → claim** debe poder reconstruirse, aunque la interfaz humana muestre solo la parte necesaria para comprender y defender el claim.
 
 ## 13. Principio rector
 

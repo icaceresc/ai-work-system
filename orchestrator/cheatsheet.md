@@ -2,6 +2,33 @@
 
 Para el Usuario. Bloques cortos que realinean al Orchestrator o fuerzan un paso concreto. Copiar el que haga falta y pegarlo tal cual.
 
+## Realinear trabajo de ML / evitar sobreingeniería
+
+Úsalo cuando EDA, features o modelado empiezan a volverse lentos,
+demasiado documentados o difíciles de recorrer.
+
+Realinea este trabajo de ML:
+
+- identifica primero qué decisión debe habilitar el siguiente análisis;
+- haz el análisis mínimo suficiente para responderla con evidencia fiable;
+- rigor proporcional al impacto potencial de estar equivocado;
+- notebook human-first: pregunta → código corto → gráfico/tabla útil →
+  interpretación breve;
+- no uses el notebook como memoria del agente, log, auditoría extensa
+  ni registro de decisiones;
+- mueve detalle reconstructivo al owner correcto (analysis.md, SQL,
+  código, tracking, context o plan), sin duplicarlo;
+- prioriza gráficos y outputs compactos sobre tablas/logs extensos;
+- no agregues análisis, métricas o infraestructura si no pueden cambiar
+  una decisión vigente;
+- una vez alcanzada evidencia suficiente para el gate, decide y avanza;
+  no perfecciones el artifact por inercia.
+
+Antes de continuar dime en pocas líneas:
+1. qué decisión estamos intentando tomar;
+2. cuál es la evidencia mínima que falta;
+3. cuál es la siguiente tarea y dónde termina.
+
 ## Realinear la forma de trabajo
 
 Úsalo cuando las respuestas se vuelven largas, dispersas o dejan de apoyarse en evidencia.
