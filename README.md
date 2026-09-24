@@ -86,6 +86,8 @@ Son archivos del proyecto, no Knowledge del Orchestrator: nunca se suben ni se s
 
 Las reglas operativas completas (autonomía del Worker, Job Packet, planificación, desarrollo sobre repos, diseño de GPTs) viven en `orchestrator/knowledge/`. Este README cubre solo instalación y arranque.
 
+El [Architectural North Star](ARCHITECTURE.md) describe la dirección conceptual del sistema y la distingue de la arquitectura implementada hoy.
+
 ## 8. Licencia
 
 [MIT](LICENSE)
